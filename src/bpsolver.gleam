@@ -6,6 +6,7 @@ import gleam/io
 import gleam/list
 import gleam/string
 
+/// Originating grid of words from family note
 const words: List(List(String)) = [
   ["pigs", "sand", "mail", "date", "head"],
   ["clam", "peak", "sand", "joya", "well"],
@@ -14,6 +15,7 @@ const words: List(List(String)) = [
   ["hand", "vase", "safe", "clay", "toes"],
 ]
 
+/// Letter and number mapping based on classrooms
 fn nums() -> Dict(String, Int) {
   dict.from_list([
     #("a", 1),
@@ -46,12 +48,14 @@ fn nums() -> Dict(String, Int) {
 }
 
 pub fn main() -> Nil {
+  // turn grid of words into grid of numbers
   let num_array =
     words
     |> nums_from_words(nums())
   num_array
   |> print_board
 
+  // find the valid order of operators with the minimum total
   let cores =
     num_array
     |> solve_cores
@@ -59,6 +63,7 @@ pub fn main() -> Nil {
   cores
   |> core.print_cores
 
+  // map the totals in a row back to letters to form 5-letter words
   let letters = invert_dict(nums())
   cores
   |> core.cores_to_words(letters)
