@@ -74,7 +74,7 @@ fn print_board(array: List(List(List(Int)))) -> Nil {
 fn print_cores(array: List(List(Cipher))) -> Nil {
   use row <- list.each(array)
   use cell <- list.each(row)
-  io.println(cell.equation <> " = " <> int.to_string(cell.total))
+  core.print_cipher(cell)
 }
 
 fn numstr(num: Int) -> String {
