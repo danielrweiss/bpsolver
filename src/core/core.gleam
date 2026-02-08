@@ -1,3 +1,4 @@
+import gleam/float
 import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
@@ -44,7 +45,7 @@ pub fn find_core(numword: List(Int)) -> Cipher {
   let results =
     ops_options
     |> list.map(fn(ops) {
-      let total = operate(ops, numword, None)
+      let total = operate(ops, numword)
       case total {
         Ok(total) -> Cipher(ops_to_string(ops), ops, total, True)
         Error(_) -> Cipher("", [], 0, False)
@@ -73,12 +74,8 @@ pub fn minimum(a: Cipher, b: Cipher) -> Cipher {
   }
 }
 
-pub fn operate(
-  ops: List(Operator),
-  nums: List(Int),
-  total: Option(Int),
-) -> Result(Int, Nil) {
-  use total <- result.try(internal_operate(ops, nums, total))
+pub fn operate(ops: List(Operator), nums: List(Int)) -> Result(Int, Nil) {
+  use total <- result.try(internal_operate(ops, nums, None))
   case total >= 0 {
     True -> Ok(total)
     False -> Error(Nil)
@@ -88,36 +85,44 @@ pub fn operate(
 fn internal_operate(
   ops: List(Operator),
   nums: List(Int),
-  total: Option(Int),
+  total: Option(Float),
 ) -> Result(Int, Nil) {
   let total = case total {
     Some(t) -> t
-    None -> 0
+    None -> 0.0
   }
   case ops {
     [op, ..rest_ops] ->
       case nums {
         [num, ..rest_nums] -> {
-          use total <- result.try(apply_operator(op, total, num))
+          use total <- result.try(apply_operator(op, total, int.to_float(num)))
           internal_operate(rest_ops, rest_nums, Some(total))
         }
-        [] -> Ok(total)
+        [] -> internal_result(total)
       }
-    [] -> Ok(total)
+    [] -> internal_result(total)
+  }
+}
+
+fn internal_result(total: Float) -> Result(Int, Nil) {
+  let total_int: Int = total |> float.truncate
+  case total -. int.to_float(total_int) {
+    0.0 -> Ok(total_int)
+    _ -> Error(Nil)
   }
 }
 
 /// Performs the operation on two numbers and returns fail if division is not an integer
-pub fn apply_operator(op: Operator, num1: Int, num2: Int) -> Result(Int, Nil) {
+pub fn apply_operator(
+  op: Operator,
+  num1: Float,
+  num2: Float,
+) -> Result(Float, Nil) {
   case op {
-    Add -> Ok(num1 + num2)
-    Subtract -> Ok(num1 - num2)
-    Multiply -> Ok(num1 * num2)
-    Divide ->
-      case num1 % num2 {
-        0 -> Ok(num1 / num2)
-        _ -> Error(Nil)
-      }
+    Add -> Ok(num1 +. num2)
+    Subtract -> Ok(num1 -. num2)
+    Multiply -> Ok(num1 *. num2)
+    Divide -> float.divide(num1, num2)
   }
 }
 

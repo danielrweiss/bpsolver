@@ -1,5 +1,4 @@
 import core/core
-import gleam/option.{None}
 import gleeunit
 
 pub fn main() -> Nil {
@@ -78,25 +77,25 @@ pub fn minimum_fail_test() {
 }
 
 pub fn operate_test() {
-  let result = core.operate(operators, nums, None)
+  let result = core.operate(operators, nums)
   assert Ok(10) == result
 }
 
 pub fn operate_fail_test() {
   let non_int_nums: List(Int) = [25, 20, 10, 4]
-  let result = core.operate(operators, non_int_nums, None)
+  let result = core.operate(operators, non_int_nums)
   assert Error(Nil) == result
 }
 
 pub fn apply_operator_test() {
-  let num = core.apply_operator(core.Add, 10, 20)
-  assert Ok(30) == num
-  let num = core.apply_operator(core.Subtract, 20, 10)
-  assert Ok(10) == num
-  let num = core.apply_operator(core.Multiply, 10, 20)
-  assert Ok(200) == num
-  let num = core.apply_operator(core.Divide, 20, 4)
-  assert Ok(5) == num
+  let num = core.apply_operator(core.Add, 10.0, 20.0)
+  assert Ok(30.0) == num
+  let num = core.apply_operator(core.Subtract, 20.0, 10.0)
+  assert Ok(10.0) == num
+  let num = core.apply_operator(core.Multiply, 10.0, 20.0)
+  assert Ok(200.0) == num
+  let num = core.apply_operator(core.Divide, 20.0, 4.0)
+  assert Ok(5.0) == num
 }
 
 pub fn op_to_string_test() {
