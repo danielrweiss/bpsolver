@@ -1,4 +1,5 @@
-import core/core.{type Cipher}
+import core/cipher
+import core/core
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
@@ -56,10 +57,11 @@ pub fn main() -> Nil {
     |> solve_cores
 
   cores
-  |> print_cores
+  |> core.print_cores
 
+  let letters = invert_dict(nums())
   cores
-  |> cores_to_words
+  |> core.cores_to_words(letters)
   |> list.each(io.println)
 }
 
@@ -68,23 +70,6 @@ fn invert_dict(dict: Dict(String, Int)) -> Dict(Int, String) {
   |> dict.to_list
   |> list.map(fn(pair) { #(pair.1, pair.0) })
   |> dict.from_list
-}
-
-fn cores_to_words(cores: List(List(Cipher))) -> List(String) {
-  let letters = invert_dict(nums())
-  use core <- list.map(cores)
-  core_to_letters(core, letters)
-}
-
-fn core_to_letters(core: List(Cipher), letters: Dict(Int, String)) -> String {
-  core
-  |> list.map(fn(cipher) {
-    case dict.get(letters, cipher.total) {
-      Ok(letter) -> string.uppercase(letter)
-      Error(_) -> "?"
-    }
-  })
-  |> string.join("")
 }
 
 fn print_board(array: List(List(List(Int)))) -> Nil {
@@ -97,22 +82,6 @@ fn print_board(array: List(List(List(Int)))) -> Nil {
       |> string.join(" ")
     })
     |> string.join("  | ")
-  })
-  |> string.join("\n")
-  |> io.println
-
-  io.println("")
-}
-
-fn print_cores(array: List(List(Cipher))) -> Nil {
-  array
-  |> list.map(fn(row) {
-    row
-    |> list.map(fn(cell) {
-      cell
-      |> core.cipher_to_string
-    })
-    |> string.join(" | ")
   })
   |> string.join("\n")
   |> io.println
@@ -144,12 +113,12 @@ fn word_to_nums(word: String, nums: Dict(String, Int)) -> List(Int) {
   }
 }
 
-fn solve_cores(array: List(List(List(Int)))) -> List(List(Cipher)) {
+fn solve_cores(array: List(List(List(Int)))) -> List(List(cipher.Cipher)) {
   use row <- list.map(array)
   use cell <- list.map(row)
   cell |> find_core
 }
 
-fn find_core(nums: List(Int)) -> core.Cipher {
+fn find_core(nums: List(Int)) -> cipher.Cipher {
   core.find_core(nums)
 }
