@@ -1,3 +1,4 @@
+import core/core.{type Cipher}
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
@@ -11,15 +12,6 @@ const words: List(List(String)) = [
   ["tree", "road", "maid", "slab", "rock"],
   ["hand", "vase", "safe", "clay", "toes"],
 ]
-
-pub type Operator {
-  Add
-  Subtract
-  Multiply
-  Divide
-}
-
-const operators: List(Operator) = [Add, Subtract, Multiply, Divide]
 
 pub fn nums() -> Dict(String, Int) {
   dict.from_list([
@@ -58,21 +50,10 @@ pub fn main() -> Nil {
     |> nums_from_words(nums())
   num_array
   |> print_board
-}
 
-fn find_cipher(numword: List(Int)) -> #(String, Int) {
-  let ops_options =
-    operators
-    |> list.permutations
-}
-
-fn apply(op: Operator, num1: Int, num2: Int) -> Int {
-  case op {
-    Add -> num1 + num2
-    Subtract -> num1 - num2
-    Multiply -> num1 * num2
-    Divide -> num1 / num2
-  }
+  num_array
+  |> solve_cores
+  |> print_cores
 }
 
 fn print_board(array: List(List(List(Int)))) -> Nil {
@@ -88,6 +69,12 @@ fn print_board(array: List(List(List(Int)))) -> Nil {
   })
   |> string.join("\n")
   |> io.println
+}
+
+fn print_cores(array: List(List(Cipher))) -> Nil {
+  use row <- list.each(array)
+  use cell <- list.each(row)
+  io.println(cell.equation <> " = " <> int.to_string(cell.total))
 }
 
 fn numstr(num: Int) -> String {
@@ -112,4 +99,14 @@ fn word_to_nums(word: String, nums: Dict(String, Int)) -> List(Int) {
     Ok(num) -> num
     Error(_) -> 0
   }
+}
+
+fn solve_cores(array: List(List(List(Int)))) -> List(List(Cipher)) {
+  use row <- list.map(array)
+  use cell <- list.map(row)
+  cell |> find_core
+}
+
+fn find_core(nums: List(Int)) -> core.Cipher {
+  core.find_core(nums)
 }
