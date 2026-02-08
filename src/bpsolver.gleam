@@ -14,7 +14,7 @@ const words: List(List(String)) = [
   ["hand", "vase", "safe", "clay", "toes"],
 ]
 
-pub fn nums() -> Dict(String, Int) {
+fn nums() -> Dict(String, Int) {
   dict.from_list([
     #("a", 1),
     #("b", 2),
@@ -74,19 +74,31 @@ fn invert_dict(dict: Dict(String, Int)) -> Dict(Int, String) {
 
 fn print_board(array: List(List(List(Int)))) -> Nil {
   array
-  |> list.map(fn(row) {
-    row
-    |> list.map(fn(cell) {
-      cell
-      |> list.map(numstr)
-      |> string.join(" ")
-    })
-    |> string.join("  | ")
-  })
+  |> format_board
+  |> join_rows
   |> string.join("\n")
   |> io.println
 
   io.println("")
+}
+
+fn format_board(array: List(List(List(Int)))) -> List(List(String)) {
+  use row <- list.map(array)
+  row |> format_row
+}
+
+fn join_rows(rows: List(List(String))) -> List(String) {
+  use row <- list.map(rows)
+  row |> string.join("  | ")
+}
+
+fn format_row(row: List(List(Int))) -> List(String) {
+  use cell <- list.map(row)
+  cell |> format_cell
+}
+
+fn format_cell(cell: List(Int)) -> String {
+  cell |> list.map(numstr) |> string.join(" ")
 }
 
 fn numstr(num: Int) -> String {
