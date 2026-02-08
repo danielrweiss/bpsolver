@@ -1,20 +1,9 @@
 # bpsolver
 
-[![Package Version](https://img.shields.io/hexpm/v/bpsolver)](https://hex.pm/packages/bpsolver)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/bpsolver/)
+### WARNING: BLUE PRINCE SPOILERS
 
-```sh
-gleam add bpsolver@1
-```
-```gleam
-import bpsolver
+Solves a late-game blue prince puzzle related to numeric cores and a family puzzle. Reference pictures are uploaded in Issues.
 
-pub fn main() -> Nil {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/bpsolver>.
 
 ## Development
 
