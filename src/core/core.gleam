@@ -1,5 +1,4 @@
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
@@ -22,8 +21,8 @@ pub fn ops_to_string(ops: List(Operator)) -> String {
   |> string.join(" ")
 }
 
-pub fn print_cipher(cipher: Cipher) -> Nil {
-  io.println(cipher.equation <> " = " <> numstr(cipher.total))
+pub fn cipher_to_string(cipher: Cipher) -> String {
+  cipher.equation <> " = " <> numstr(cipher.total)
 }
 
 fn numstr(num: Int) -> String {
@@ -52,9 +51,6 @@ pub fn find_core(numword: List(Int)) -> Cipher {
       }
     })
     |> list.filter(fn(cipher) { cipher.valid })
-
-  // results |> list.each(print_cipher)
-  // let results = results |> list.filter(fn(cipher) { cipher.valid })
 
   results
   |> min_cipher

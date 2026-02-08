@@ -51,6 +51,8 @@ pub fn main() -> Nil {
   num_array
   |> print_board
 
+  io.println("")
+
   num_array
   |> solve_cores
   |> print_cores
@@ -65,16 +67,24 @@ fn print_board(array: List(List(List(Int)))) -> Nil {
       |> list.map(numstr)
       |> string.join(" ")
     })
-    |> string.join(" | ")
+    |> string.join("  | ")
   })
   |> string.join("\n")
   |> io.println
 }
 
 fn print_cores(array: List(List(Cipher))) -> Nil {
-  use row <- list.each(array)
-  use cell <- list.each(row)
-  core.print_cipher(cell)
+  array
+  |> list.map(fn(row) {
+    row
+    |> list.map(fn(cell) {
+      cell
+      |> core.cipher_to_string
+    })
+    |> string.join(" | ")
+  })
+  |> string.join("\n")
+  |> io.println
 }
 
 fn numstr(num: Int) -> String {
