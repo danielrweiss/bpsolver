@@ -51,11 +51,40 @@ pub fn main() -> Nil {
   num_array
   |> print_board
 
-  io.println("")
+  let cores =
+    num_array
+    |> solve_cores
 
-  num_array
-  |> solve_cores
+  cores
   |> print_cores
+
+  cores
+  |> cores_to_words
+  |> list.each(io.println)
+}
+
+fn invert_dict(dict: Dict(String, Int)) -> Dict(Int, String) {
+  dict
+  |> dict.to_list
+  |> list.map(fn(pair) { #(pair.1, pair.0) })
+  |> dict.from_list
+}
+
+fn cores_to_words(cores: List(List(Cipher))) -> List(String) {
+  let letters = invert_dict(nums())
+  use core <- list.map(cores)
+  core_to_letters(core, letters)
+}
+
+fn core_to_letters(core: List(Cipher), letters: Dict(Int, String)) -> String {
+  core
+  |> list.map(fn(cipher) {
+    case dict.get(letters, cipher.total) {
+      Ok(letter) -> string.uppercase(letter)
+      Error(_) -> "?"
+    }
+  })
+  |> string.join("")
 }
 
 fn print_board(array: List(List(List(Int)))) -> Nil {
@@ -71,6 +100,8 @@ fn print_board(array: List(List(List(Int)))) -> Nil {
   })
   |> string.join("\n")
   |> io.println
+
+  io.println("")
 }
 
 fn print_cores(array: List(List(Cipher))) -> Nil {
@@ -85,6 +116,8 @@ fn print_cores(array: List(List(Cipher))) -> Nil {
   })
   |> string.join("\n")
   |> io.println
+
+  io.println("")
 }
 
 fn numstr(num: Int) -> String {
